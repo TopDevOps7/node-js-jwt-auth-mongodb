@@ -1,23 +1,30 @@
 const express = require("express");
 const cors = require("cors");
+const passport = require("passport");
 
 const app = express();
 
-let corsOptions = {
-  origin: "http://localhost:8081",
-};
-
-app.use(cors(corsOptions));
-
-// parse requests of content-type - application/json
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(passport.initialize());
 
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: true }));
+const corsOptions = {
+  AllowMethods: ["GET, POST, PUT, PATCH, DELETE, HEAD"],
+  AllowHeaders: ["Origin, X-Requested-With, AcceptContent-Length, Accept, Content-Type, Authorization"],
+  ExposeHeaders: ["Content-Length"],
+  AllowCredentials: true,
+  origin: function (origin, callback) {
+    callback(null, true);
+  },
+};
+app.use(cors(corsOptions));
+app.use(express.static("public"));
 
-// simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to okamoto application." });
+  res.json({
+    success: true,
+    message: "Welcome to Okamoto application.",
+  });
 });
 
 // routes
